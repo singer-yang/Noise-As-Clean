@@ -1,29 +1,7 @@
 import torch
 import numpy as np
-import cv2 as cv
 from torch.utils.data import Dataset
 from torchvision import transforms
-from skimage.util import random_noise
-
-
-def generate_noisy(sgm, img_path):
-    """ generate noisy pairs """
-
-    img = cv.cvtColor(cv.imread(img_path), cv.COLOR_BGR2RGB)
-
-    if img.dtype == np.uint8:
-        img = img / 255.0
-    if img.ndim == 2:
-        img = np.expand_dims(img, axis=2)
-
-    noisy_img = random_noise(img, mode = 'gaussian', var = (sgm/255.)**2)
-
-    # img_size = img.shape
-    # noisy_img = img + sgm / 255.0 * np.random.randn(*img_size)
-
-    # return (W, H, C) RGB image in range (0, 1)
-    return img.astype(np.float32), noisy_img.astype(np.float32)
-
 
 class NAC_singleImg(Dataset):
     def __init__(self, imgy, sgm2, mode='train'):
@@ -32,7 +10,7 @@ class NAC_singleImg(Dataset):
         self.mode = mode
 
     def __len__(self):
-        # every epoch contains 16 different realizations (randomly set)
+        # every epoch contains 4 different realizations (randomly set)
         return 4
 
     def __getitem__(self, idx):
